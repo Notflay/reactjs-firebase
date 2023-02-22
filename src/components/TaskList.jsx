@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AppContext } from "../App";
 import { db } from "../firebase";
 import {
   addNewTask,
@@ -21,8 +22,10 @@ const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [mode, setMode] = useState("add");
 
+  const { user } = useContext(AppContext);
+
   async function createNewTask() {
-    await addNewTask(task);
+    await addNewTask(task).catch((e) => console.log("Error!!!"));
     initializeTasks();
   }
 
@@ -66,6 +69,7 @@ const TaskList = () => {
           type={"text"}
           value={task.title}
           name="title"
+          disabled={!user}
           placeholder="Titulo"
           onChange={(e) =>
             setTask({ ...task, [e.target.name]: e.target.value })
@@ -75,6 +79,7 @@ const TaskList = () => {
           className="border shadow outline-none focus:ring ring-sky-200 rounded px-2 w-1/5"
           rows={3}
           type={"text"}
+          disabled={!user}
           value={task.description}
           name="description"
           placeholder="Descripcion"
@@ -83,7 +88,8 @@ const TaskList = () => {
           }
         />
         <button
-          className="bg-sky-400 text-white rounded shadow py-1 w-1/5 hover:bg-sky-300 transition"
+          className="bg-sky-400 text-white rounded shadow py-1 w-1/5 hover:bg-sky-300 transition disabled:bg-sky-200"
+          disabled={!user}
           onClick={() =>
             mode === "update" ? updateExistTask() : createNewTask()
           }
@@ -122,6 +128,11 @@ const TaskList = () => {
           </div>
         ))}
       </div>
+      {!user && (
+        <p className="text-red-600">
+          Necesitas estar logueado para leer y añadir
+        </p>
+      )}
     </div>
   );
 };
