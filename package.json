@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && ncp dist build",
+    "build": "vite build",
     "preview": "vite preview",
     "firebase:deploy": "npm run build && firebase deploy"
   },
